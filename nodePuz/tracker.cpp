@@ -52,5 +52,3 @@ void MoveUnit::set(MoveUnit::MV new_mv){mov = new_mv;}
 
 
 
-
-

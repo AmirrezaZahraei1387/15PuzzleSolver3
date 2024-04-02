@@ -1,6 +1,7 @@
 //
 // Created by KAVOSH on 4/2/2024.
 //
+#include <memory>
 #include <exception>
 #include <cmath>
 #include "nodePuz.hpp"
@@ -101,17 +102,21 @@ bool NodePuz::move(const MoveUnit& mu) {
         default:
             return false;
     }
+
+    moves.push_back(mu);    // add the successful move to the moves
+
     return true;
 }
 
 void NodePuz::set(int i, int j, int v) {
     if (i >= 0 && i < MAX_ROWS && j >= 0 && j < MAX_COLUMNS) {
-        int index{MAX_ALL - (i * MAX_ROWS + j)};
+        int index{MAX_ALL - (i * MAX_ROWS + j) - 1};
         int digit{(board / static_cast<std::int32_t>(std::pow(10, index))) % 10};
         board -= static_cast<std::int32_t>(std::pow(10, index))*digit;
         board += static_cast<std::int32_t>(std::pow(10, index))*v;
+        return;
     }
-    throw std::out_of_range("index out of range at NodePuz::at");
+    throw std::out_of_range("index out of range at NodePuz::set");
 }
 
 std::ostream& operator<<(std::ostream &out, const NodePuz &np) {
@@ -119,7 +124,23 @@ std::ostream& operator<<(std::ostream &out, const NodePuz &np) {
     return out;
 }
 
+void NodePuz::inc_depth() {++depth;}
 
+const MoveTracker &NodePuz::getMoves() const {return moves;}
+
+std::int32_t NodePuz::getConfig() const {
+    return board;
+}
+
+NodePuz applyMoveTracker(const NodePuz &np, const MoveTracker &mvt) {
+
+    NodePuz temp(np);
+
+    for(const auto& m: mvt)
+        temp.move(m);
+
+    return std::move(temp);
+}
 
 
 
