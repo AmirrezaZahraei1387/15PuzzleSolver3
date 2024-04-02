@@ -6,12 +6,12 @@
 #include <cmath>
 #include "nodePuz.hpp"
 
+bool operator==(const Pos &p1, const Pos &p2) {
+    return p1.r == p2.r && p2.c == p1.c;
+}
+
 Pos NodePuz::deterHolePos() const {
-    for(int i{0}; i < MAX_ROWS; ++i)
-        for(int j{0}; j < MAX_COLUMNS; ++j)
-            if(at(i, j) == HOLE)
-                return {i, j};
-    return {-1, -1};
+    return find(HOLE);
 }
 
 NodePuz::NodePuz(std::int32_t nodeConfig, const MoveTracker& mv, int depth)
@@ -136,6 +136,18 @@ int NodePuz::getDepth() const {
     return depth;
 }
 
+Pos NodePuz::find(int k) const {
+    for(int i{0}; i < MAX_ROWS; ++i)
+        for(int j{0}; j < MAX_COLUMNS; ++j)
+            if(at(i, j) == k)
+                return {i, j};
+    return {-1, -1};
+}
+
+bool NodePuz::isvalid(const Pos &pos) {
+    return pos.r >= 0 && pos.r < NodePuz::MAX_ROWS && pos.c >= 0 && pos.c < NodePuz::MAX_COLUMNS;
+}
+
 NodePuz applyMoveTracker(const NodePuz &np, const MoveTracker &mvt) {
 
     NodePuz temp(np);
@@ -145,10 +157,4 @@ NodePuz applyMoveTracker(const NodePuz &np, const MoveTracker &mvt) {
 
     return std::move(temp);
 }
-
-
-
-
-
-
 

@@ -33,4 +33,24 @@ void solveWithBFS(const NodePuz& init, const NodePuz& endto, MoveTracker& mvt);
  * in the endto configuration.
  */
 void solveWithTilesOut(const NodePuz& init, const NodePuz& endto, MoveTracker& mvt);
+
+/*
+ * uses a BFS approach but works faster because it chooses the node with least number
+ *  of literal moves to reach the goal state
+ */
+void solveWithMinLitMoves(const NodePuz& init, const NodePuz& endto, MoveTracker& mvt);
+
+/*
+ * uses a BFS approach but works faster.
+ * We use a heuristic to actuate the score of each which is described as follows.
+ *
+ * totdist = total manhattan distance of current from base
+ * seq = a tile in the centre scores 1;
+ * a tile on a non-central square scores 0 if the tile is, in the clockwise direction,
+ * followed by its proper successor.
+ * such a tile scores 2 if it is not followed by its proper successor.
+ *
+ * H = totdist + 3 * seq
+ */
+void solveWithHScore(const NodePuz& init, const NodePuz& endto, MoveTracker& mvt);
 #endif //INC_15PUZZLESOLVER3_SOLVER_HPP

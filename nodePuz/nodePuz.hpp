@@ -11,6 +11,8 @@
 struct Pos{
     int r;
     int c;
+
+    friend bool operator==(const Pos& p1, const Pos& p2);
 };
 
 
@@ -42,8 +44,11 @@ public:
     [[nodiscard]] const MoveTracker& getMoves() const;
     [[nodiscard]] std::int32_t getConfig() const;
     [[nodiscard]] int getDepth() const;
+    Pos find(int k) const;
 
     void inc_depth();
+
+    static bool isvalid(const Pos& pos);
 private:
     [[nodiscard]] Pos deterHolePos() const;
 

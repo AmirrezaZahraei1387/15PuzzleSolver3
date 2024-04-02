@@ -8,6 +8,82 @@
 #include "../nodePuz/nodePuz.hpp"
 #include "solver.hpp"
 
+// the following structures calculate the optimization scores
+// they all must contain a static function of the signature
+// static int calcScore(const NodePuz& current, const NodePuz& endto);
+
+
+
+struct MinLitMoves{
+
+    static int calcScore(const NodePuz& current, const NodePuz& endto){
+
+        int distance{0};
+
+        for(int i{0}; i < NodePuz::MAX_ALL; ++i){
+            Pos p1 = current.find(i);
+            Pos p2 = endto.find(i);
+
+            if(p1 == p2)
+                continue;
+            distance += std::abs(p1.r - p2.r) + std::abs(p1.c - p2.c);
+        }
+
+        return distance;
+    }
+};
+
+struct OptimizedByHScore{
+    static int calcScore(const NodePuz& current, const NodePuz& endto){
+
+        int totdist{MinLitMoves::calcScore(current, endto)};
+        int seq_score{0};
+
+        // tile in center scores 1
+        if(current.at(NodePuz::MAX_ROWS/2, NodePuz::MAX_COLUMNS/2)
+        != endto.at(NodePuz::MAX_ROWS/2, NodePuz::MAX_COLUMNS/2))
+            seq_score += 1;
+
+        for(int i{0} ; i < NodePuz::MAX_ROWS; ++i)
+            for(int j{0}; j < NodePuz::MAX_COLUMNS; ++j){
+
+                if(i == NodePuz::MAX_ROWS/2 && j == NodePuz::MAX_COLUMNS/2)
+                    continue;
+
+                if(current.at(i, j) != endto.at(i, j)) {
+                    seq_score += 2;
+                    continue;
+                }
+
+                bool flag{false};
+
+                if(NodePuz::isvalid({i - 1, j})){
+                    if(current.at(i - 1, j) == endto.at(i - 1, j))
+                        flag = true;
+                }
+
+                if(NodePuz::isvalid({i + 1, j})){
+                    if(current.at(i + 1, j) == endto.at(i + 1, j))
+                        flag = true;
+                }
+
+                if(NodePuz::isvalid({i, j - 1})){
+                    if(current.at(i, j - 1) == endto.at(i, j - 1))
+                        flag = true;
+                }
+
+                if(NodePuz::isvalid({i, j + 1})){
+                    if(current.at(i, j + 1) == endto.at(i, j + 1))
+                        flag = true;
+                }
+
+                if(flag)
+                    seq_score += 2;
+            }
+
+        return totdist + 3 * seq_score;
+    }
+};
 
 struct TilesOutOfPlace{
 
@@ -25,6 +101,8 @@ struct TilesOutOfPlace{
         return counter;
     }
 };
+
+
 
 // it packs the NodePuz with its optimization score out
 template<typename CalcScore>
@@ -48,6 +126,7 @@ static void solveWithOptimizedBFS(PrWENode<CalcScore> &current,
                          std::unordered_set<std::int32_t>& visited,
                          MoveTracker& mvt) {
 
+    // min heap
     using PqPrio = std::priority_queue<PrWENode<CalcScore>, std::vector<PrWENode<CalcScore>>, std::greater<>>;
 
     PqPrio pq;
@@ -92,4 +171,18 @@ void solveWithTilesOut(const NodePuz &init, const NodePuz &endto, MoveTracker& m
     PrWENode<TilesOutOfPlace> start{.np = init};
 
     solveWithOptimizedBFS<TilesOutOfPlace>(start, endto, visited, mvt);
+}
+
+void solveWithMinLitMoves(const NodePuz &init, const NodePuz &endto, MoveTracker &mvt) {
+    std::unordered_set<std::int32_t> visited;
+    PrWENode<MinLitMoves> start{.np = init};
+
+    solveWithOptimizedBFS<MinLitMoves>(start, endto, visited, mvt);
+}
+
+void solveWithHScore(const NodePuz &init, const NodePuz &endto, MoveTracker &mvt) {
+    std::unordered_set<std::int32_t> visited;
+    PrWENode<OptimizedByHScore> start{.np = init};
+
+    solveWithOptimizedBFS<OptimizedByHScore>(start, endto, visited, mvt);
 }
