@@ -132,6 +132,10 @@ std::int32_t NodePuz::getConfig() const {
     return board;
 }
 
+int NodePuz::getDepth() const {
+    return depth;
+}
+
 NodePuz applyMoveTracker(const NodePuz &np, const MoveTracker &mvt) {
 
     NodePuz temp(np);

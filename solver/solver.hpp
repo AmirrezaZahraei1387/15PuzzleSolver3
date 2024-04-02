@@ -32,4 +32,5 @@ void solveWithBFS(const NodePuz& init, const NodePuz& endto, MoveTracker& mvt);
  * it basically means the number of tiles that are not in their actual place
  * in the endto configuration.
  */
+void solveWithTilesOut(const NodePuz& init, const NodePuz& endto, MoveTracker& mvt);
 #endif //INC_15PUZZLESOLVER3_SOLVER_HPP

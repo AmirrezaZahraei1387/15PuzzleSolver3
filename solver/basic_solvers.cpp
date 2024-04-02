@@ -6,7 +6,7 @@
 #include <iostream>
 #include "solver.hpp"
 
-static bool solveWithDFS(NodePuz &current,
+static bool solveWithDFS(const NodePuz &current,
                          const NodePuz &endto,
                          std::unordered_set<std::int32_t>& visited,
                          MoveTracker& mvt) {
@@ -30,7 +30,7 @@ static bool solveWithDFS(NodePuz &current,
     return false;
 }
 
-static void solveWithBFS(NodePuz &current,
+static void solveWithBFS(const NodePuz &current,
                          const NodePuz &endto,
                          std::unordered_set<std::int32_t>& visited,
                          MoveTracker& mvt) {
@@ -65,10 +65,10 @@ static void solveWithBFS(NodePuz &current,
 
 void solveWithDFS(const NodePuz &init, const NodePuz &endto, MoveTracker& mvt) {
     std::unordered_set<std::int32_t> visited;
-    solveWithDFS(const_cast<NodePuz&>(init), endto, visited, mvt);
+    solveWithDFS(init, endto, visited, mvt);
 }
 
 void solveWithBFS(const NodePuz &init, const NodePuz &endto, MoveTracker &mvt) {
     std::unordered_set<std::int32_t> visited;
-    solveWithBFS(const_cast<NodePuz&>(init), endto, visited, mvt);
+    solveWithBFS(init, endto, visited, mvt);
 }

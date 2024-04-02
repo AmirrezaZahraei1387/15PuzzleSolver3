@@ -41,6 +41,7 @@ public:
     bool move(const MoveUnit& mu);
     [[nodiscard]] const MoveTracker& getMoves() const;
     [[nodiscard]] std::int32_t getConfig() const;
+    [[nodiscard]] int getDepth() const;
 
     void inc_depth();
 private:
