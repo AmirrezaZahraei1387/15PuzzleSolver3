@@ -41,10 +41,12 @@ public:
     // the position is invalid
     [[nodiscard]] int at(int i, int j) const;
     bool move(const MoveUnit& mu);
+
     [[nodiscard]] const MoveTracker& getMoves() const;
     [[nodiscard]] std::int32_t getConfig() const;
     [[nodiscard]] int getDepth() const;
-    Pos find(int k) const;
+    [[nodiscard]] Pos getHolePos() const;
+    [[nodiscard]] Pos find(int k) const;
 
     void inc_depth();
 

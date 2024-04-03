@@ -8,11 +8,10 @@
 #include "../nodePuz/nodePuz.hpp"
 #include "solver.hpp"
 
+
 // the following structures calculate the optimization scores
 // they all must contain a static function of the signature
 // static int calcScore(const NodePuz& current, const NodePuz& endto);
-
-
 
 struct MinLitMoves{
 
@@ -32,6 +31,7 @@ struct MinLitMoves{
         return distance;
     }
 };
+
 
 struct OptimizedByHScore{
     static int calcScore(const NodePuz& current, const NodePuz& endto){
@@ -85,6 +85,7 @@ struct OptimizedByHScore{
     }
 };
 
+
 struct TilesOutOfPlace{
 
     static int calcScore(const NodePuz& current, const NodePuz& endto){
@@ -119,6 +120,7 @@ public:
     }
 
 };
+
 
 template<typename CalcScore>
 static void solveWithOptimizedBFS(PrWENode<CalcScore> &current,
@@ -173,12 +175,14 @@ void solveWithTilesOut(const NodePuz &init, const NodePuz &endto, MoveTracker& m
     solveWithOptimizedBFS<TilesOutOfPlace>(start, endto, visited, mvt);
 }
 
+
 void solveWithMinLitMoves(const NodePuz &init, const NodePuz &endto, MoveTracker &mvt) {
     std::unordered_set<std::int32_t> visited;
     PrWENode<MinLitMoves> start{.np = init};
 
     solveWithOptimizedBFS<MinLitMoves>(start, endto, visited, mvt);
 }
+
 
 void solveWithHScore(const NodePuz &init, const NodePuz &endto, MoveTracker &mvt) {
     std::unordered_set<std::int32_t> visited;

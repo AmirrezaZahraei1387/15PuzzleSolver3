@@ -120,8 +120,11 @@ void NodePuz::set(int i, int j, int v) {
 }
 
 std::ostream& operator<<(std::ostream &out, const NodePuz &np) {
-    out<<np.board;
-    return out;
+    for(int i{0}; i < NodePuz::MAX_ROWS; ++i) {
+        for (int j{0}; j < NodePuz::MAX_COLUMNS; ++j)
+            out << np.at(i, j)<<' ';
+        out<<std::endl;
+    }
 }
 
 void NodePuz::inc_depth() {++depth;}
@@ -146,6 +149,10 @@ Pos NodePuz::find(int k) const {
 
 bool NodePuz::isvalid(const Pos &pos) {
     return pos.r >= 0 && pos.r < NodePuz::MAX_ROWS && pos.c >= 0 && pos.c < NodePuz::MAX_COLUMNS;
+}
+
+Pos NodePuz::getHolePos() const{
+    return hole_pos;
 }
 
 NodePuz applyMoveTracker(const NodePuz &np, const MoveTracker &mvt) {

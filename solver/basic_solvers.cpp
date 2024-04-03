@@ -6,41 +6,58 @@
 #include <iostream>
 #include "solver.hpp"
 
-static bool solveWithDFS(const NodePuz &current,
+/*
+ * it might be seen that the BFS version works very faster than the DFS.
+ * this is because of the nature of them and the way these algorithms try to
+ * find a solution.
+ *
+ * the DFS dig deep into the graph this can wast a lot of time if the solution is
+ * not there as is the case for small puzzle.
+ *
+ * The BFS however check the adjacent nodes and for a small puzzle is likelier to
+ * find the answer quicker there.
+ */
+
+static void solveWithDFS(const NodePuz &current,
                          const NodePuz &endto,
                          std::unordered_set<std::int32_t>& visited,
                          MoveTracker& mvt) {
-    if (current == endto) {
-        mvt = current.getMoves();
-        return true;
-    }
 
-    for (const auto &mov: ALL_MOVES) {
-        auto temp(current);
+    std::stack<NodePuz> stack;
+    stack.push(current);
+    visited.insert(current.getConfig());
 
-        if (!temp.move(mov)) continue;
+    while (!stack.empty()) {
+        const auto np = stack.top();
+        stack.pop();
 
-        if (visited.count(temp.getConfig()) == 0) {
-            visited.insert(temp.getConfig());
-            if(solveWithDFS(temp, endto, visited, mvt))
-                return true;
+        if (np == endto) {
+            mvt = np.getMoves();
+            return;
+        }
+
+        for (const auto& mov : ALL_MOVES) {
+            auto temp(np);
+
+            if (!temp.move(mov)) continue;
+
+            if (visited.count(temp.getConfig()) == 0) {
+                visited.insert(temp.getConfig());
+                stack.push(std::move(temp));
+            }
         }
     }
-
-    return false;
 }
 
 static void solveWithBFS(const NodePuz &current,
                          const NodePuz &endto,
                          std::unordered_set<std::int32_t>& visited,
                          MoveTracker& mvt) {
-
     std::queue<NodePuz> pq;
     pq.push(current);
     visited.insert(current.getConfig());
 
     while(!pq.empty()) {
-
         const auto np(pq.front());
         pq.pop();
 

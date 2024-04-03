@@ -33,10 +33,10 @@ private:
 
 // all the moves to facilitate iteration
 inline const std::array<MoveUnit, 4> ALL_MOVES{
-        MoveUnit(MoveUnit::UP),
-        MoveUnit(MoveUnit::DOWN),
-        MoveUnit(MoveUnit::LEFT),
-        MoveUnit(MoveUnit::RIGHT)
+    MoveUnit(MoveUnit::LEFT),
+    MoveUnit(MoveUnit::RIGHT),
+    MoveUnit(MoveUnit::UP),
+    MoveUnit(MoveUnit::DOWN),
 };
 
 // the move tracker tracks down the moves of the each node
