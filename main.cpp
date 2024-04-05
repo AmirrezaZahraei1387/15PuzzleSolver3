@@ -72,6 +72,9 @@ int main() {
     std::cout<<std::endl;
 
     std::cout<<"number of moves is:"<<mvt.size()<<std::endl;
+
+    // the moves are produced a small function will test if those moves get ys to goal state
+    // from init state. True if yes, false otherwise
     std::cout<<"(testing if moves really result in goal config):"<<std::boolalpha
     <<(applyMoveTracker(init, mvt) == endto)<<std::endl;
 
