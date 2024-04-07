@@ -12,6 +12,9 @@
  * endto represents the goal config.
  * the mvt is MoveTracker object that
  * contains the moves needed to proceed to reach the endto state.
+ *
+ * all solvers must have the following signature:
+ * void name(const NodePuz& init, const NodePuz& endto, MoveTracker& mvt);
  */
 
 /*

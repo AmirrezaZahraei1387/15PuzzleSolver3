@@ -10,10 +10,12 @@
 
 
 // the following structures calculate the optimization scores
-// they all must contain a static function of the signature
-// static int calcScore(const NodePuz& current, const NodePuz& endto);
+struct ScoreCalcul{
+    virtual int operator()(const NodePuz& current, const NodePuz& endto) const= 0;
+};
 
-struct MinLitMoves{
+
+struct MinLitMoves: public ScoreCalcul{
 
     static int calcScore(const NodePuz& current, const NodePuz& endto){
 
@@ -30,10 +32,14 @@ struct MinLitMoves{
 
         return distance;
     }
+
+    int operator()(const NodePuz& current, const NodePuz& endto) const final{
+        return calcScore(current, endto);
+    }
 };
 
 
-struct OptimizedByHScore{
+struct OptimizedByHScore: ScoreCalcul{
     static int calcScore(const NodePuz& current, const NodePuz& endto){
 
         int totdist{MinLitMoves::calcScore(current, endto)};
@@ -83,10 +89,14 @@ struct OptimizedByHScore{
 
         return totdist + 3 * seq_score;
     }
+
+    int operator()(const NodePuz& current, const NodePuz& endto) const final{
+        return calcScore(current, endto);
+    }
 };
 
 
-struct TilesOutOfPlace{
+struct TilesOutOfPlace: ScoreCalcul{
 
     static int calcScore(const NodePuz& current, const NodePuz& endto){
 
@@ -100,6 +110,10 @@ struct TilesOutOfPlace{
             }
         }
         return counter;
+    }
+
+    int operator()(const NodePuz& current, const NodePuz& endto) const final{
+        return calcScore(current, endto);
     }
 };
 
@@ -116,12 +130,20 @@ public:
 
     void calcOut(const NodePuz& x)// must calculate and set the out
     {
-        out = CalcScore::calcScore(np, x) + np.getDepth();
+        static CalcScore cs;    // scoring function
+        out = cs(np, x) + np.getDepth();
     }
 
 };
 
 
+/*
+ *
+ * solves the puzzle with some optimization.
+ * the optimization is basically a score given to each if the states.
+ * then they are prioritized into a min heap. thus it is important for the best
+ * state to have the least score while less promising ones having larger scores.
+ */
 template<typename CalcScore>
 static void solveWithOptimizedBFS(PrWENode<CalcScore> &current,
                          const NodePuz &endto,
@@ -130,7 +152,6 @@ static void solveWithOptimizedBFS(PrWENode<CalcScore> &current,
 
     // min heap
     using PqPrio = std::priority_queue<PrWENode<CalcScore>, std::vector<PrWENode<CalcScore>>, std::greater<>>;
-
     PqPrio pq;
     pq.push(current);
     visited.insert(current.np.getConfig());
