@@ -125,6 +125,8 @@ std::ostream& operator<<(std::ostream &out, const NodePuz &np) {
             out << np.at(i, j)<<' ';
         out<<std::endl;
     }
+
+    return out;
 }
 
 void NodePuz::inc_depth() {++depth;}
@@ -162,6 +164,6 @@ NodePuz applyMoveTracker(const NodePuz &np, const MoveTracker &mvt) {
     for(const auto& m: mvt)
         temp.move(m);
 
-    return std::move(temp);
+    return temp;
 }
 
