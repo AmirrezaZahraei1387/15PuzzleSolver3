@@ -10,6 +10,8 @@ int main() {
     std::int32_t base_config;
     int algol{0};
 
+    std::cout<<"please make sure that the given configurations are solvable!"<<std::endl;
+
     std::cout<<"enter the init config:";
     std::cin>>init_config;
 
